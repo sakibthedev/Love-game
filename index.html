@@ -37,9 +37,15 @@
 
         h2 {
             color: #e11d48;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
             font-size: 1.5rem;
             line-height: 1.4;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #64748b;
+            margin-bottom: 20px;
         }
 
         .emoji {
@@ -104,7 +110,6 @@
             z-index: 9999;
         }
 
-        /* GIF Styling */
         .love-gif {
             width: 100%;
             max-width: 250px;
@@ -123,13 +128,14 @@
     <div id="screen-name" class="card">
         <span class="emoji">✨</span>
         <h2>Welcome</h2>
+        <div class="subtitle">Please enter your name</div>
         <input type="text" id="user-name" placeholder="Enter your name..." autocomplete="off">
         <button class="btn-submit" id="submit-btn">Continue</button>
     </div>
 
     <div id="screen-question" class="card hidden">
         <span class="emoji">💝</span>
-        <h2 id="proposal-text"></h2>
+        <h2 id="proposal-text" style="margin-bottom: 20px;"></h2>
         
         <div class="btn-container">
             <button class="btn-yes" id="yes-btn">YES</button>
@@ -141,7 +147,7 @@
 
     <div id="screen-success" class="card hidden">
         <span class="emoji">🥰❤️</span>
-        <h2 id="success-text"></h2>
+        <h2 id="success-text" style="margin-bottom: 15px;"></h2>
         <img class="love-gif" src="https://media.tenor.com/t3g4I0rZor0AAAAC/cat-kiss-catkiss.gif" alt="Cute Cats Kissing">
     </div>
 
