@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>A Special Question ❤️</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe3e3 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; /* Prevents stretching and scrolling on mobile */
+            color: #4a5568;
+            touch-action: manipulation; /* Optimizes mobile tap delays */
+        }
+
+        .card {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(244, 63, 94, 0.1);
+            text-align: center;
+            max-width: 360px;
+            width: 85%;
+            border: 2px solid #ffe3e3;
+            z-index: 10;
+        }
+
+        h2 {
+            color: #e11d48;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .emoji {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Input Field styling */
+        input[type="text"] {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #fda4af;
+            border-radius: 12px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            outline: none;
+            text-align: center;
+            -webkit-appearance: none; /* Fixes iOS input rendering */
+        }
+
+        input[type="text"]:focus {
+            border-color: #f43f5e;
+        }
+
+        /* Mobile-friendly Button sizes */
+        button {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+        }
+
+        .btn-submit {
+            background-color: #f43f5e;
+            color: white;
+            width: 100%;
+        }
+
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 25px;
+            width: 100%;
+        }
+
+        .btn-yes {
+            background-color: #22c55e;
+            color: white;
+        }
+
+        .no-wrapper {
+            display: inline-block;
+        }
+
+        .btn-no {
+            background-color: #ef4444;
+            color: white;
+            /* Smooth transitions for mobile jumps */
+            transition: left 0.1s ease-out, top 0.1s ease-out; 
+            z-index: 9999; /* Keeps the floating button on top of everything */
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="screen-name" class="card">
+        <span class="emoji">✨</span>
+        <h2>Welcome</h2>
+        <input type="text" id="user-name" placeholder="Enter your name..." autocomplete="off">
+        <button class="btn-submit" id="submit-btn">Continue</button>
+    </div>
+
+    <div id="screen-question" class="card hidden">
+        <span class="emoji">💝</span>
+        <h2 id="proposal-text"></h2>
+        
+        <div class="btn-container">
+            <button class="btn-yes" id="yes-btn">YES</button>
+            <div class="no-wrapper">
+                <button class="btn-no" id="no-btn">NO</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-success" class="card hidden">
+        <span class="emoji">🥰🌹❤️</span>
+        <h2 id="success-text"></h2>
+    </div>
+
+    <script>
+        const screenName = document.getElementById('screen-name');
+        const screenQuestion = document.getElementById('screen-question');
+        const screenSuccess = document.getElementById('screen-success');
+        
+        const nameInput = document.getElementById('user-name');
+        const submitBtn = document.getElementById('submit-btn');
+        const proposalText = document.getElementById('proposal-text');
+        const successText = document.getElementById('success-text');
+        
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+
+        let savedName = "";
+
+        submitBtn.addEventListener('click', () => {
+            savedName = nameInput.value.trim();
+            
+            if (savedName === "") {
+                alert("Please enter a name first! 😉");
+                return;
+            }
+
+            proposalText.textContent = `${savedName}, will you be forever mine? ❤️🌹`;
+            
+            screenName.classList.add('hidden');
+            screenQuestion.classList.remove('hidden');
+        });
+
+        // Optimized Floating Algorithm for Mobile screens
+        function floatNoButton() {
+            // Safe boundaries based on button dimensions so it stays fully visible on mobile screens
+            const btnWidth = noBtn.offsetWidth || 80;
+            const btnHeight = noBtn.offsetHeight || 50;
+
+            const maxX = window.innerWidth - btnWidth;
+            const maxY = window.innerHeight - btnHeight;
+
+            // Generate precise boundaries inside the current viewpoint dimensions
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY);
+
+            noBtn.style.position = 'fixed';
+            noBtn.style.left = `${randomX}px`;
+            noBtn.style.top = `${randomY}px`;
+        }
+
+        // Desktop Interaction
+        noBtn.addEventListener('mouseenter', floatNoButton);
+        
+        // Mobile Interaction (Triggers instantly when finger touches down)
+        noBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Completely blocks default mobile click registration
+            floatNoButton();
+        });
+
+        yesBtn.addEventListener('click', () => {
+            successText.textContent = `I love you too, ${savedName} ❤️`;
+            screenQuestion.classList.add('hidden');
+            screenSuccess.classList.remove('hidden');
+        });
+    </script>
+</body>
+</html>
