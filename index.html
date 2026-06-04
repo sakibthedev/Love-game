@@ -18,9 +18,9 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            overflow: hidden; /* Prevents stretching and scrolling on mobile */
+            overflow: hidden;
             color: #4a5568;
-            touch-action: manipulation; /* Optimizes mobile tap delays */
+            touch-action: manipulation;
         }
 
         .card {
@@ -48,7 +48,6 @@
             display: block;
         }
 
-        /* Input Field styling */
         input[type="text"] {
             width: 100%;
             padding: 14px;
@@ -58,14 +57,13 @@
             margin-bottom: 20px;
             outline: none;
             text-align: center;
-            -webkit-appearance: none; /* Fixes iOS input rendering */
+            -webkit-appearance: none;
         }
 
         input[type="text"]:focus {
             border-color: #f43f5e;
         }
 
-        /* Mobile-friendly Button sizes */
         button {
             padding: 14px 32px;
             font-size: 1.1rem;
@@ -102,9 +100,17 @@
         .btn-no {
             background-color: #ef4444;
             color: white;
-            /* Smooth transitions for mobile jumps */
             transition: left 0.1s ease-out, top 0.1s ease-out; 
-            z-index: 9999; /* Keeps the floating button on top of everything */
+            z-index: 9999;
+        }
+
+        /* GIF Styling */
+        .love-gif {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 15px;
+            margin-top: 15px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
 
         .hidden {
@@ -134,8 +140,9 @@
     </div>
 
     <div id="screen-success" class="card hidden">
-        <span class="emoji">🥰🌹❤️</span>
+        <span class="emoji">🥰❤️</span>
         <h2 id="success-text"></h2>
+        <img class="love-gif" src="https://media.tenor.com/t3g4I0rZor0AAAAC/cat-kiss-catkiss.gif" alt="Cute Cats Kissing">
     </div>
 
     <script>
@@ -167,16 +174,13 @@
             screenQuestion.classList.remove('hidden');
         });
 
-        // Optimized Floating Algorithm for Mobile screens
         function floatNoButton() {
-            // Safe boundaries based on button dimensions so it stays fully visible on mobile screens
             const btnWidth = noBtn.offsetWidth || 80;
             const btnHeight = noBtn.offsetHeight || 50;
 
             const maxX = window.innerWidth - btnWidth;
             const maxY = window.innerHeight - btnHeight;
 
-            // Generate precise boundaries inside the current viewpoint dimensions
             const randomX = Math.floor(Math.random() * maxX);
             const randomY = Math.floor(Math.random() * maxY);
 
@@ -185,12 +189,9 @@
             noBtn.style.top = `${randomY}px`;
         }
 
-        // Desktop Interaction
         noBtn.addEventListener('mouseenter', floatNoButton);
-        
-        // Mobile Interaction (Triggers instantly when finger touches down)
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Completely blocks default mobile click registration
+            e.preventDefault(); 
             floatNoButton();
         });
 
