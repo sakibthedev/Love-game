@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
     <title>A Special Question ❤️</title>
+
     <style>
         * {
             box-sizing: border-box;
@@ -85,6 +87,11 @@
             width: 100%;
         }
 
+        .btn-submit:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
         .btn-container {
             display: flex;
             justify-content: center;
@@ -106,7 +113,7 @@
         .btn-no {
             background-color: #ef4444;
             color: white;
-            transition: left 0.1s ease-out, top 0.1s ease-out; 
+            transition: left 0.1s ease-out, top 0.1s ease-out;
             z-index: 9999;
         }
 
@@ -123,89 +130,289 @@
         }
     </style>
 </head>
+
 <body>
 
+    <!-- NAME SCREEN -->
     <div id="screen-name" class="card">
+
         <span class="emoji">✨</span>
+
         <h2>Welcome</h2>
-        <div class="subtitle">Please enter your name</div>
-        <input type="text" id="user-name" placeholder="Enter your name..." autocomplete="off">
-        <button class="btn-submit" id="submit-btn">Continue</button>
-    </div>
 
-    <div id="screen-question" class="card hidden">
-        <span class="emoji">💝</span>
-        <h2 id="proposal-text" style="margin-bottom: 20px;"></h2>
-        
-        <div class="btn-container">
-            <button class="btn-yes" id="yes-btn">YES</button>
-            <div class="no-wrapper">
-                <button class="btn-no" id="no-btn">NO</button>
-            </div>
+        <div class="subtitle">
+            Please enter your name
         </div>
+
+        <input
+            type="text"
+            id="user-name"
+            placeholder="Enter your name..."
+            autocomplete="off"
+        >
+
+        <button class="btn-submit" id="submit-btn">
+            Continue
+        </button>
+
     </div>
 
-    <div id="screen-success" class="card hidden">
-        <span class="emoji">🥰❤️</span>
-        <h2 id="success-text" style="margin-bottom: 15px;"></h2>
-        <img class="love-gif" src="cat-kiss.gif" alt="Cute Cats Kissing">
+
+    <!-- QUESTION SCREEN -->
+    <div id="screen-question" class="card hidden">
+
+        <span class="emoji">💝</span>
+
+        <h2 id="proposal-text" style="margin-bottom: 20px;"></h2>
+
+        <div class="btn-container">
+
+            <button class="btn-yes" id="yes-btn">
+                YES
+            </button>
+
+            <div class="no-wrapper">
+                <button class="btn-no" id="no-btn">
+                    NO
+                </button>
+            </div>
+
+        </div>
+
     </div>
+
+
+    <!-- SUCCESS SCREEN -->
+    <div id="screen-success" class="card hidden">
+
+        <span class="emoji">🥰❤️</span>
+
+        <h2 id="success-text" style="margin-bottom: 15px;"></h2>
+
+        <img
+            class="love-gif"
+            src="cat-kiss.gif"
+            alt="Cute Cats Kissing"
+        >
+
+    </div>
+
+
+    <!-- SUPABASE JAVASCRIPT LIBRARY -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 
     <script>
-        const screenName = document.getElementById('screen-name');
-        const screenQuestion = document.getElementById('screen-question');
-        const screenSuccess = document.getElementById('screen-success');
-        
-        const nameInput = document.getElementById('user-name');
-        const submitBtn = document.getElementById('submit-btn');
-        const proposalText = document.getElementById('proposal-text');
-        const successText = document.getElementById('success-text');
-        
-        const yesBtn = document.getElementById('yes-btn');
-        const noBtn = document.getElementById('no-btn');
+
+        // ==========================================
+        // SUPABASE CONNECTION
+        // ==========================================
+
+        const SUPABASE_URL =
+            "https://qtqqmmzbsngkpqtmcnco.supabase.co";
+
+        const SUPABASE_KEY =
+            "sb_publishable__TfzVA9rNETm6cck7lp63Q_awDTd4zI";
+
+
+        const supabaseClient = supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+
+        // ==========================================
+        // GET HTML ELEMENTS
+        // ==========================================
+
+        const screenName =
+            document.getElementById('screen-name');
+
+        const screenQuestion =
+            document.getElementById('screen-question');
+
+        const screenSuccess =
+            document.getElementById('screen-success');
+
+
+        const nameInput =
+            document.getElementById('user-name');
+
+        const submitBtn =
+            document.getElementById('submit-btn');
+
+
+        const proposalText =
+            document.getElementById('proposal-text');
+
+        const successText =
+            document.getElementById('success-text');
+
+
+        const yesBtn =
+            document.getElementById('yes-btn');
+
+        const noBtn =
+            document.getElementById('no-btn');
+
 
         let savedName = "";
 
-        submitBtn.addEventListener('click', () => {
+
+        // ==========================================
+        // SAVE NAME TO SUPABASE
+        // ==========================================
+
+        submitBtn.addEventListener('click', async () => {
+
             savedName = nameInput.value.trim();
-            
+
+
+            // Check if name is empty
             if (savedName === "") {
+
                 alert("Please enter a name first! 😉");
+
                 return;
             }
 
-            proposalText.textContent = `${savedName}, will you be forever mine? ❤️🌹`;
-            
+
+            // Disable button while saving
+            submitBtn.disabled = true;
+
+            submitBtn.textContent = "Saving...";
+
+
+            // Insert name into Supabase
+            const { data, error } = await supabaseClient
+                .from('names')
+                .insert([
+                    {
+                        name: savedName
+                    }
+                ]);
+
+
+            // Check for errors
+            if (error) {
+
+                console.error(
+                    "Supabase error:",
+                    error
+                );
+
+                alert(
+                    "Could not save your name. Please try again."
+                );
+
+                submitBtn.disabled = false;
+
+                submitBtn.textContent = "Continue";
+
+                return;
+            }
+
+
+            // Name successfully saved
+            console.log(
+                "Name saved successfully!"
+            );
+
+
+            // Show question
+            proposalText.textContent =
+                `${savedName}, will you be forever mine? ❤️🌹`;
+
+
             screenName.classList.add('hidden');
+
             screenQuestion.classList.remove('hidden');
+
         });
+
+
+        // ==========================================
+        // MOVE NO BUTTON
+        // ==========================================
 
         function floatNoButton() {
-            const btnWidth = noBtn.offsetWidth || 80;
-            const btnHeight = noBtn.offsetHeight || 50;
 
-            const maxX = window.innerWidth - btnWidth;
-            const maxY = window.innerHeight - btnHeight;
+            const btnWidth =
+                noBtn.offsetWidth || 80;
 
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY);
+            const btnHeight =
+                noBtn.offsetHeight || 50;
+
+
+            const maxX =
+                window.innerWidth - btnWidth;
+
+            const maxY =
+                window.innerHeight - btnHeight;
+
+
+            const randomX =
+                Math.floor(Math.random() * maxX);
+
+            const randomY =
+                Math.floor(Math.random() * maxY);
+
 
             noBtn.style.position = 'fixed';
-            noBtn.style.left = `${randomX}px`;
-            noBtn.style.top = `${randomY}px`;
+
+            noBtn.style.left =
+                `${randomX}px`;
+
+            noBtn.style.top =
+                `${randomY}px`;
+
         }
 
-        noBtn.addEventListener('mouseenter', floatNoButton);
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); 
-            floatNoButton();
-        });
 
-        yesBtn.addEventListener('click', () => {
-            successText.textContent = `I love you too, ${savedName} ❤️`;
-            screenQuestion.classList.add('hidden');
-            screenSuccess.classList.remove('hidden');
-        });
+        // Desktop
+        noBtn.addEventListener(
+            'mouseenter',
+            floatNoButton
+        );
+
+
+        // Mobile
+        noBtn.addEventListener(
+            'touchstart',
+            (e) => {
+
+                e.preventDefault();
+
+                floatNoButton();
+
+            }
+        );
+
+
+        // ==========================================
+        // YES BUTTON
+        // ==========================================
+
+        yesBtn.addEventListener(
+            'click',
+            () => {
+
+                successText.textContent =
+                    `I love you too, ${savedName} ❤️`;
+
+
+                screenQuestion.classList.add(
+                    'hidden'
+                );
+
+                screenSuccess.classList.remove(
+                    'hidden'
+                );
+
+            }
+        );
+
     </script>
+
 </body>
 </html>
